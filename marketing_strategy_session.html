@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Strategy — Beginner Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-light: #E6F1FB; --blue-mid: #378ADD; --blue-dark: #0C447C;
+    --teal-light: #E1F5EE; --teal-mid: #1D9E75; --teal-dark: #085041;
+    --amber-light: #FAEEDA; --amber-mid: #BA7517; --amber-dark: #633806;
+    --coral-light: #FAECE7; --coral-mid: #D85A30; --coral-dark: #712B13;
+    --purple-light: #EEEDFE; --purple-mid: #7F77DD; --purple-dark: #3C3489;
+    --green-light: #EAF3DE; --green-mid: #639922; --green-dark: #27500A;
+    --bg: #f7f6f2; --surface: #ffffff; --text: #1a1a1a; --muted: #6b6b6b; --border: #e2e0da;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 2rem;
+    animation: slideDown 0.5s ease both;
+  }
+  .header-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: var(--blue-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .header h1 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+  .header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .badge {
+    margin-left: auto;
+    background: var(--blue-light); color: var(--blue-dark);
+    font-size: 12px; font-weight: 500; padding: 5px 14px;
+    border-radius: 20px; white-space: nowrap;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 2rem;
+    animation: slideDown 0.5s 0.1s ease both; opacity: 0;
+    animation-fill-mode: forwards;
+  }
+  .progress-labels {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--muted); margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 3px; background: var(--blue-mid);
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .step-dots {
+    display: flex; gap: 8px; margin-top: 10px; justify-content: center;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); transition: all 0.3s ease; cursor: pointer;
+  }
+  .dot.active { background: var(--blue-mid); transform: scale(1.3); }
+  .dot.done { background: var(--teal-mid); }
+
+  /* Slide container */
+  .slide-container {
+    position: relative; min-height: 480px;
+  }
+  .slide {
+    display: none;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    animation: fadeIn 0.4s ease both;
+  }
+  .slide.active { display: block; }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes popIn { 0%{transform:scale(0.6);opacity:0} 70%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+  @keyframes slideRight { from{transform:translateX(-30px);opacity:0} to{transform:translateX(0);opacity:1} }
+  @keyframes fadeUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+
+  .slide-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .slide-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800; color: var(--text);
+    margin-bottom: 8px; line-height: 1.2;
+  }
+  .slide-desc {
+    font-size: 15px; color: var(--muted); line-height: 1.7;
+    margin-bottom: 1.4rem; max-width: 580px;
+  }
+
+  /* Slide 1 — Intro cards */
+  .intro-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  @media(min-width:500px) { .intro-grid { grid-template-columns: repeat(4,1fr); } }
+  .intro-card {
+    border-radius: 14px; padding: 16px 12px; text-align: center;
+    opacity: 0; animation: popIn 0.45s ease both;
+  }
+  .intro-card .ic-icon { font-size: 26px; margin-bottom: 8px; display: block; }
+  .intro-card .ic-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .intro-card .ic-sub { font-size: 12px; opacity: 0.75; }
+
+  .highlight-box {
+    margin-top: 1.2rem; border-radius: 12px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .highlight-box .hb-label { font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .highlight-box .hb-text { font-size: 13px; line-height: 1.5; }
+
+  /* Slide 2 — Customer questions */
+  .cq-list { display: flex; flex-direction: column; gap: 8px; }
+  .cq-item {
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; transform: translateX(-24px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .cq-item.visible { opacity: 1; transform: translateX(0); }
+  .cq-icon { font-size: 20px; width: 32px; flex-shrink: 0; text-align: center; }
+  .cq-title { font-size: 14px; font-weight: 600; }
+  .cq-sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+  /* Slide 3 — 4Ps */
+  .fourp-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .p-card {
+    border-radius: 16px; padding: 18px;
+    opacity: 0; animation: popIn 0.45s ease both;
+    position: relative; overflow: hidden;
+  }
+  .p-letter {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px; font-weight: 800;
+    opacity: 0.15; position: absolute; right: 12px; top: 6px; line-height: 1;
+  }
+  .p-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .p-question { font-size: 13px; font-weight: 500; margin-bottom: 6px; opacity: 0.8; }
+  .p-example { font-size: 12px; font-style: italic; opacity: 0.7; }
+
+  /* Slide 4 — UVP */
+  .uvp-formula {
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+    text-align: center; font-size: 16px; font-weight: 500; line-height: 2;
+  }
+  .fill-blank {
+    display: inline-block; padding: 2px 10px; border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+  }
+  .uvp-example {
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+    border-left: 4px solid;
+    opacity: 0; animation: slideRight 0.5s ease both;
+  }
+  .uvp-example .ue-brand { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .uvp-example .ue-text { font-size: 13px; line-height: 1.5; }
+
+  /* Slide 5 — Journey */
+  .journey-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .journey-step {
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeUp 0.5s ease both;
+  }
+  .js-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .js-title { font-size: 14px; font-weight: 600; }
+  .js-sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+  .js-eg { font-size: 11px; font-style: italic; opacity: 0.65; margin-top: 2px; }
+
+  /* Slide 6 — Quiz */
+  .quiz-q {
+    font-size: 16px; font-weight: 600; color: var(--text);
+    margin-bottom: 1rem; line-height: 1.5;
+  }
+  .quiz-opt {
+    display: block; width: 100%; text-align: left;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 12px 16px; margin-bottom: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--surface); cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue-dark); }
+  .quiz-opt.correct { border-color: var(--teal-mid); background: var(--teal-light); color: var(--teal-dark); font-weight: 500; }
+  .quiz-opt.wrong { border-color: var(--coral-mid); background: var(--coral-light); color: var(--coral-dark); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-result {
+    border-radius: 12px; padding: 14px 16px; margin-top: 12px;
+    font-size: 14px; line-height: 1.6; font-weight: 500;
+    min-height: 20px;
+  }
+  .action-row {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.2rem;
+    padding-top: 1rem; border-top: 1px solid var(--border);
+  }
+  .action-btn {
+    padding: 9px 16px; border-radius: 10px; font-family: 'DM Sans',sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
+    transition: all 0.2s; text-decoration: none;
+  }
+  .action-btn:hover { border-color: var(--blue-mid); color: var(--blue-dark); background: var(--blue-light); }
+  .action-btn.primary { background: var(--blue-mid); color: #fff; border-color: var(--blue-mid); }
+  .action-btn.primary:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+
+  /* Nav */
+  .nav-row {
+    display: flex; align-items: center; gap: 12px; margin-top: 1.4rem;
+  }
+  .nav-btn {
+    padding: 10px 22px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: var(--surface);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--text); cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--blue-mid); color: var(--blue-dark); background: var(--blue-light); }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; }
+  .nav-btn.primary { background: var(--blue-mid); color: #fff; border-color: var(--blue-mid); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--blue-dark); border-color: var(--blue-dark); }
+  .nav-spacer { flex: 1; }
+  .slide-counter { font-size: 13px; color: var(--muted); }
+
+  /* Completion banner */
+  .complete-banner {
+    text-align: center; padding: 2rem;
+    animation: popIn 0.5s ease both;
+  }
+  .complete-icon { font-size: 56px; margin-bottom: 1rem; animation: pulse 1.5s ease infinite; display: block; }
+  .complete-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .complete-sub { font-size: 15px; color: var(--muted); margin-bottom: 1.4rem; }
+  .recap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1.4rem; }
+  .recap-item { background: var(--bg); border-radius: 12px; padding: 12px; text-align: center; }
+  .recap-icon { font-size: 20px; margin-bottom: 4px; display: block; }
+  .recap-label { font-size: 12px; font-weight: 500; color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="header-icon">🎯</div>
+    <div>
+      <h1>Business Management Academy</h1>
+      <p>Marketing Strategy — Beginner Level</p>
+    </div>
+    <span class="badge">Day 1 · Session 1</span>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-labels">
+      <span id="progressLabel">Slide 1 of 6</span>
+      <span id="progressPct">17%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:17%"></div></div>
+    <div class="step-dots" id="stepDots"></div>
+  </div>
+
+  <div class="slide-container">
+
+    <!-- Slide 1: What is Marketing Strategy -->
+    <div class="slide active" id="s0">
+      <div class="slide-eyebrow">Session 1 of 6 · Introduction</div>
+      <div class="slide-title">What is marketing strategy? 🚀</div>
+      <div class="slide-desc">Marketing strategy is your game plan for reaching the right people, with the right message, at the right time — so they choose <strong>you</strong> over everyone else.</div>
+      <div class="intro-grid">
+        <div class="intro-card" style="background:var(--blue-light);animation-delay:0.1s">
+          <span class="ic-icon">🎯</span>
+          <div class="ic-title" style="color:var(--blue-dark)">Right audience</div>
+          <div class="ic-sub" style="color:var(--blue-dark)">Who are your customers?</div>
+        </div>
+        <div class="intro-card" style="background:var(--teal-light);animation-delay:0.2s">
+          <span class="ic-icon">💬</span>
+          <div class="ic-title" style="color:var(--teal-dark)">Right message</div>
+          <div class="ic-sub" style="color:var(--teal-dark)">What do you tell them?</div>
+        </div>
+        <div class="intro-card" style="background:var(--amber-light);animation-delay:0.3s">
+          <span class="ic-icon">⏰</span>
+          <div class="ic-title" style="color:var(--amber-dark)">Right time</div>
+          <div class="ic-sub" style="color:var(--amber-dark)">When do they need you?</div>
+        </div>
+        <div class="intro-card" style="background:var(--purple-light);animation-delay:0.4s">
+          <span class="ic-icon">📍</span>
+          <div class="ic-title" style="color:var(--purple-dark)">Right place</div>
+          <div class="ic-sub" style="color:var(--purple-dark)">Where do you reach them?</div>
+        </div>
+      </div>
+      <div class="highlight-box" style="background:var(--blue-light)">
+        <span class="hb-label" style="color:var(--blue-dark)">💡 Real example:</span>
+        <span class="hb-text" style="color:var(--blue-dark)">Nike doesn't just sell shoes — they sell the feeling of being an athlete. "Just Do It" isn't about products, it's about identity. That's strategy.</span>
+      </div>
+    </div>
+
+    <!-- Slide 2: Know Your Customer -->
+    <div class="slide" id="s1">
+      <div class="slide-eyebrow">Session 2 of 6 · Research</div>
+      <div class="slide-title">Know your customer first 🔍</div>
+      <div class="slide-desc">Before marketing anything, you must know exactly who you're talking to. This is called your <strong>target audience</strong>.</div>
+      <div class="cq-list" id="cqList">
+        <div class="cq-item" style="background:var(--teal-light)">
+          <span class="cq-icon">👤</span>
+          <div><div class="cq-title" style="color:var(--teal-dark)">Who are they?</div><div class="cq-sub" style="color:var(--teal-dark)">Age, gender, job, location, lifestyle</div></div>
+        </div>
+        <div class="cq-item" style="background:var(--purple-light)">
+          <span class="cq-icon">❤️</span>
+          <div><div class="cq-title" style="color:var(--purple-dark)">What do they want?</div><div class="cq-sub" style="color:var(--purple-dark)">Dreams, goals, desires, aspirations</div></div>
+        </div>
+        <div class="cq-item" style="background:var(--coral-light)">
+          <span class="cq-icon">😓</span>
+          <div><div class="cq-title" style="color:var(--coral-dark)">What's their pain?</div><div class="cq-sub" style="color:var(--coral-dark)">Problems, frustrations, struggles they face daily</div></div>
+        </div>
+        <div class="cq-item" style="background:var(--amber-light)">
+          <span class="cq-icon">📱</span>
+          <div><div class="cq-title" style="color:var(--amber-dark)">Where do they hang out?</div><div class="cq-sub" style="color:var(--amber-dark)">Instagram, TikTok, YouTube, Google, LinkedIn</div></div>
+        </div>
+        <div class="cq-item" style="background:var(--green-light)">
+          <span class="cq-icon">💰</span>
+          <div><div class="cq-title" style="color:var(--green-dark)">What can they afford?</div><div class="cq-sub" style="color:var(--green-dark)">Budget range, spending habits, price sensitivity</div></div>
+        </div>
+      </div>
+      <div class="highlight-box" style="background:var(--amber-light);margin-top:1rem">
+        <span class="hb-label" style="color:var(--amber-dark)">☕ Example:</span>
+        <span class="hb-text" style="color:var(--amber-dark)">A coffee shop near a university targets students aged 18–25 who need energy to study and love Instagram-worthy aesthetic drinks under $6.</span>
+      </div>
+    </div>
+
+    <!-- Slide 3: 4 Ps -->
+    <div class="slide" id="s2">
+      <div class="slide-eyebrow">Session 3 of 6 · Framework</div>
+      <div class="slide-title">The 4 Ps of marketing 🏆</div>
+      <div class="slide-desc">Every marketing strategy is built on 4 pillars. Master these and you can market <em>anything</em>.</div>
+      <div class="fourp-grid">
+        <div class="p-card" style="background:var(--blue-light);animation-delay:0.1s">
+          <div class="p-letter" style="color:var(--blue-mid)">P</div>
+          <div class="p-name" style="color:var(--blue-dark)">Product</div>
+          <div class="p-question" style="color:var(--blue-dark)">What are you selling?</div>
+          <div class="p-example" style="color:var(--blue-dark)">e.g. Handmade organic soap bars</div>
+        </div>
+        <div class="p-card" style="background:var(--teal-light);animation-delay:0.2s">
+          <div class="p-letter" style="color:var(--teal-mid)">P</div>
+          <div class="p-name" style="color:var(--teal-dark)">Price</div>
+          <div class="p-question" style="color:var(--teal-dark)">How much do you charge?</div>
+          <div class="p-example" style="color:var(--teal-dark)">e.g. $12 per bar (premium)</div>
+        </div>
+        <div class="p-card" style="background:var(--amber-light);animation-delay:0.3s">
+          <div class="p-letter" style="color:var(--amber-mid)">P</div>
+          <div class="p-name" style="color:var(--amber-dark)">Place</div>
+          <div class="p-question" style="color:var(--amber-dark)">Where do you sell it?</div>
+          <div class="p-example" style="color:var(--amber-dark)">e.g. Farmers market + Etsy shop</div>
+        </div>
+        <div class="p-card" style="background:var(--purple-light);animation-delay:0.4s">
+          <div class="p-letter" style="color:var(--purple-mid)">P</div>
+          <div class="p-name" style="color:var(--purple-dark)">Promotion</div>
+          <div class="p-question" style="color:var(--purple-dark)">How do people find out?</div>
+          <div class="p-example" style="color:var(--purple-dark)">e.g. Instagram reels + influencers</div>
+        </div>
+      </div>
+      <div class="highlight-box" style="background:var(--purple-light);margin-top:1rem">
+        <span class="hb-label" style="color:var(--purple-dark)">🍎 Apple's 4 Ps:</span>
+        <span class="hb-text" style="color:var(--purple-dark)">Premium product design · High price (status signal) · Apple Stores + online (place) · Sleek emotional ads (promotion). All 4 work together perfectly.</span>
+      </div>
+    </div>
+
+    <!-- Slide 4: UVP -->
+    <div class="slide" id="s3">
+      <div class="slide-eyebrow">Session 4 of 6 · Positioning</div>
+      <div class="slide-title">Your unique value proposition 💎</div>
+      <div class="slide-desc">A UVP answers: <em>"Why should I choose YOU over everyone else?"</em> — It's the heart of your entire marketing.</div>
+      <div class="uvp-formula" style="background:var(--coral-light);color:var(--coral-dark)">
+        "I help
+        <span class="fill-blank" style="background:var(--coral-mid);color:#fff">[who]</span>
+        achieve
+        <span class="fill-blank" style="background:var(--coral-mid);color:#fff">[what result]</span>
+        by
+        <span class="fill-blank" style="background:var(--coral-mid);color:#fff">[your way]</span>
+        — unlike
+        <span class="fill-blank" style="background:var(--coral-mid);color:#fff">[the alternative]</span>"
+      </div>
+      <div class="uvp-example" style="background:var(--blue-light);border-color:var(--blue-mid);animation-delay:0.1s">
+        <div class="ue-brand" style="color:var(--blue-dark)">🚗 Uber's UVP</div>
+        <div class="ue-text" style="color:var(--blue-dark)">"We help busy city people get a safe, affordable ride in minutes — unlike waiting for taxis with no idea when they'll arrive."</div>
+      </div>
+      <div class="uvp-example" style="background:var(--teal-light);border-color:var(--teal-mid);animation-delay:0.25s">
+        <div class="ue-brand" style="color:var(--teal-dark)">🥐 Local bakery UVP</div>
+        <div class="ue-text" style="color:var(--teal-dark)">"We help health-conscious families enjoy guilt-free pastries made with natural ingredients — unlike stores that use preservatives and artificial flavors."</div>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:13px;color:var(--muted)">
+        💡 The clearer your UVP, the easier your entire marketing becomes.
+      </div>
+    </div>
+
+    <!-- Slide 5: Customer Journey -->
+    <div class="slide" id="s4">
+      <div class="slide-eyebrow">Session 5 of 6 · Strategy</div>
+      <div class="slide-title">The customer journey 🗺️</div>
+      <div class="slide-desc">Customers don't buy instantly. They pass through stages — and your marketing must guide them through each one.</div>
+      <div class="journey-wrap">
+        <div class="journey-step" style="background:var(--blue-light);animation-delay:0.1s">
+          <div class="js-num" style="background:var(--blue-mid);color:#fff">1</div>
+          <div>
+            <div class="js-title" style="color:var(--blue-dark)">Awareness — They discover you exist</div>
+            <div class="js-sub" style="color:var(--blue-dark)">Ad, social post, word of mouth, search result</div>
+            <div class="js-eg" style="color:var(--blue-dark)">Starbucks: "Saw a seasonal drink on Instagram"</div>
+          </div>
+        </div>
+        <div class="journey-step" style="background:var(--purple-light);animation-delay:0.2s">
+          <div class="js-num" style="background:var(--purple-mid);color:#fff">2</div>
+          <div>
+            <div class="js-title" style="color:var(--purple-dark)">Interest — They want to learn more</div>
+            <div class="js-sub" style="color:var(--purple-dark)">Visit your website, follow your page, watch your content</div>
+            <div class="js-eg" style="color:var(--purple-dark)">Starbucks: "Downloaded the app, browsed the menu"</div>
+          </div>
+        </div>
+        <div class="journey-step" style="background:var(--amber-light);animation-delay:0.3s">
+          <div class="js-num" style="background:var(--amber-mid);color:#fff">3</div>
+          <div>
+            <div class="js-title" style="color:var(--amber-dark)">Decision — They consider buying</div>
+            <div class="js-sub" style="color:var(--amber-dark)">Compare prices, read reviews, check alternatives</div>
+            <div class="js-eg" style="color:var(--amber-dark)">Starbucks: "Checked prices vs local café"</div>
+          </div>
+        </div>
+        <div class="journey-step" style="background:var(--teal-light);animation-delay:0.4s">
+          <div class="js-num" style="background:var(--teal-mid);color:#fff">4</div>
+          <div>
+            <div class="js-title" style="color:var(--teal-dark)">Action — They buy! 🎉</div>
+            <div class="js-sub" style="color:var(--teal-dark)">Purchase, sign up, book, subscribe</div>
+            <div class="js-eg" style="color:var(--teal-dark)">Starbucks: "Ordered the Pumpkin Spice Latte"</div>
+          </div>
+        </div>
+        <div class="journey-step" style="background:var(--green-light);animation-delay:0.5s;border:2px solid var(--green-mid)">
+          <div class="js-num" style="background:var(--green-mid);color:#fff">5</div>
+          <div>
+            <div class="js-title" style="color:var(--green-dark)">Loyalty — They come back AND tell friends ⭐</div>
+            <div class="js-sub" style="color:var(--green-dark)">Repeat purchases, referrals, reviews, brand advocates</div>
+            <div class="js-eg" style="color:var(--green-dark)">Starbucks: "Gets the rewards card, tells 3 friends"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Quiz -->
+    <div class="slide" id="s5">
+      <div class="slide-eyebrow">Session 6 of 6 · Knowledge check</div>
+      <div class="slide-title">Quick quiz — test yourself! 🧠</div>
+      <div class="slide-desc">One question to make sure the key concept stuck. No pressure!</div>
+      <div class="quiz-q">A small bakery wants more customers. What should be their FIRST marketing step?</div>
+      <button class="quiz-opt" onclick="answer(this,false)">A. Start running paid Facebook ads immediately</button>
+      <button class="quiz-opt" onclick="answer(this,true)">B. Identify and deeply understand their ideal customer</button>
+      <button class="quiz-opt" onclick="answer(this,false)">C. Redesign their logo and brand colors</button>
+      <button class="quiz-opt" onclick="answer(this,false)">D. Open accounts on every social media platform</button>
+      <div class="quiz-result" id="qResult"></div>
+      <div class="action-row">
+        <button class="action-btn" onclick="alert('In a full academy, this would open a 4 Ps deep-dive session!')">Deep dive: 4 Ps 📖</button>
+        <button class="action-btn" onclick="alert('Exercise: Write YOUR bakery\'s UVP using the formula from slide 4!')">Practice exercise ✏️</button>
+        <button class="action-btn primary" onclick="showComplete()">Complete session ✓</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Nav -->
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn" onclick="go(-1)" disabled>← Back</button>
+    <div class="nav-spacer"></div>
+    <span class="slide-counter" id="slideCounter">1 / 6</span>
+    <div class="nav-spacer"></div>
+    <button class="nav-btn primary" id="nextBtn" onclick="go(1)">Next →</button>
+  </div>
+
+</div>
+
+<!-- Completion overlay (in-flow) -->
+<div id="completePage" style="display:none; max-width:780px; margin:2rem auto; padding:0 1rem;">
+  <div style="background:var(--surface);border-radius:20px;border:1px solid var(--border);">
+    <div class="complete-banner">
+      <span class="complete-icon">🎓</span>
+      <div class="complete-title">Session complete!</div>
+      <div class="complete-sub">You've finished your first marketing strategy session. Here's what you mastered today:</div>
+      <div class="recap-grid">
+        <div class="recap-item"><span class="recap-icon">🎯</span><div class="recap-label">What marketing strategy is</div></div>
+        <div class="recap-item"><span class="recap-icon">👤</span><div class="recap-label">Knowing your customer</div></div>
+        <div class="recap-item"><span class="recap-icon">🏆</span><div class="recap-label">The 4 Ps framework</div></div>
+        <div class="recap-item"><span class="recap-icon">💎</span><div class="recap-label">Writing a UVP</div></div>
+        <div class="recap-item"><span class="recap-icon">🗺️</span><div class="recap-label">The customer journey</div></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="action-btn primary" onclick="location.reload()">← Restart session</button>
+        <button class="action-btn" onclick="alert('Next: Digital Marketing session coming up!')">Next session: Digital marketing →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let cur = 0;
+  const total = 6;
+  const dots = document.getElementById('stepDots');
+
+  for(let i=0;i<total;i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    d.onclick = () => { jumpTo(i); };
+    dots.appendChild(d);
+  }
+
+  function updateUI(){
+    document.getElementById('progressLabel').textContent = 'Slide '+(cur+1)+' of '+total;
+    const pct = Math.round((cur+1)/total*100);
+    document.getElementById('progressPct').textContent = pct+'%';
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('slideCounter').textContent = (cur+1)+' / '+total;
+    document.getElementById('prevBtn').disabled = cur===0;
+    document.getElementById('nextBtn').disabled = cur===total-1;
+    document.querySelectorAll('.dot').forEach((d,i)=>{
+      d.className = 'dot' + (i===cur?' active':(i<cur?' done':''));
+    });
+    if(cur===1) animateCustomer();
+  }
+
+  function jumpTo(i){
+    document.getElementById('s'+cur).classList.remove('active');
+    cur = i;
+    document.getElementById('s'+cur).classList.add('active');
+    updateUI();
+  }
+
+  function go(dir){
+    document.getElementById('s'+cur).classList.remove('active');
+    cur = Math.max(0,Math.min(total-1,cur+dir));
+    const sl = document.getElementById('s'+cur);
+    sl.classList.remove('active');
+    void sl.offsetWidth;
+    sl.classList.add('active');
+    updateUI();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function animateCustomer(){
+    const items = document.querySelectorAll('#cqList .cq-item');
+    items.forEach((el,i)=>{
+      setTimeout(()=>{ el.classList.add('visible'); }, i*140);
+    });
+  }
+
+  function answer(btn, correct){
+    document.querySelectorAll('.quiz-opt').forEach(o=>o.disabled=true);
+    const res = document.getElementById('qResult');
+    if(correct){
+      btn.classList.add('correct');
+      res.style.background = 'var(--teal-light)';
+      res.style.color = 'var(--teal-dark)';
+      res.innerHTML = '✅ Correct! Always start with understanding your customer — everything else in marketing flows from that foundation.';
+    } else {
+      btn.classList.add('wrong');
+      document.querySelectorAll('.quiz-opt')[1].classList.add('correct');
+      res.style.background = 'var(--coral-light)';
+      res.style.color = 'var(--coral-dark)';
+      res.innerHTML = '❌ Not quite. Rushing to ads or rebranding without knowing your customer wastes time and money. Always start with customer research.';
+    }
+  }
+
+  function showComplete(){
+    document.querySelector('.wrapper').style.display='none';
+    document.getElementById('completePage').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  updateUI();
+</script>
+</body>
+</html>
